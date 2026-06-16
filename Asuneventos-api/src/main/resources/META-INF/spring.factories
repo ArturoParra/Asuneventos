@@ -1,0 +1,1 @@
+org.springframework.boot.env.EnvironmentPostProcessor=mx.ipn.escom.web.eventos.config.DotenvEnvironmentPostProcessor

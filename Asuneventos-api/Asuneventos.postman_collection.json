@@ -1,0 +1,105 @@
+{
+  "info": {
+    "name": "Asuneventos API - DTOs",
+    "description": "API REST - IPN ESCOM v2.0 (DTOs)\n\nBase URL: http://localhost:8080\nSwagger: http://localhost:8080/swagger-ui.html\n\nIMPORTANTE: Ahora los request bodies usan IDs planos en vez de objetos anidados.\nEj: \"idServicio\": 1 en vez de \"servicio\": {\"idServicio\": 1}",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{jwt_token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080" },
+    { "key": "jwt_token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [{
+        "name": "POST Login (Admin)",
+        "event": [{ "listen": "test", "script": { "exec": ["var d=pm.response.json();if(d.token){pm.collectionVariables.set('jwt_token',d.token);console.log('Rol: '+d.rol);}"], "type": "text/javascript" } }],
+        "request": {
+          "method": "POST",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": { "mode": "raw", "raw": "{\"email\":\"admin@asuneventos.com\",\"password\":\"123456\"}" },
+          "url": { "raw": "{{base_url}}/api/v1/auth/login", "host": ["{{base_url}}"], "path": ["api","v1","auth","login"] }
+        }
+      }]
+    },
+    {
+      "name": "2. Servicios",
+      "item": [
+        { "name": "GET Listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/servicios", "host": ["{{base_url}}"], "path": ["api","v1","servicios"] } } },
+        { "name": "GET por ID", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/servicios/1", "host": ["{{base_url}}"], "path": ["api","v1","servicios","1"] } } },
+        { "name": "POST Crear [ADMIN]", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"nombre\":\"Concierto Rock\",\"descripcion\":\"Servicio completo de concierto\"}" }, "url": { "raw": "{{base_url}}/api/v1/servicios", "host": ["{{base_url}}"], "path": ["api","v1","servicios"] } } },
+        { "name": "PUT Actualizar [ADMIN]", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"nombre\":\"Concierto VIP\",\"descripcion\":\"Actualizado\"}" }, "url": { "raw": "{{base_url}}/api/v1/servicios/1", "host": ["{{base_url}}"], "path": ["api","v1","servicios","1"] } } },
+        { "name": "DELETE [ADMIN]", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/v1/servicios/1", "host": ["{{base_url}}"], "path": ["api","v1","servicios","1"] } } }
+      ]
+    },
+    {
+      "name": "3. Planes",
+      "item": [
+        { "name": "GET Listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/planes", "host": ["{{base_url}}"], "path": ["api","v1","planes"] } } },
+        { "name": "GET por ID", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/planes/1", "host": ["{{base_url}}"], "path": ["api","v1","planes","1"] } } },
+        { "name": "GET por Servicio", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/planes/servicio/1", "host": ["{{base_url}}"], "path": ["api","v1","planes","servicio","1"] } } },
+        { "name": "POST Crear [ADMIN]", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"idServicio\":1,\"fecha\":\"2026-12-25\",\"tituloSerie\":\"Gira Navidad 2026\"}" }, "url": { "raw": "{{base_url}}/api/v1/planes", "host": ["{{base_url}}"], "path": ["api","v1","planes"] }, "description": "Usa idServicio (ID plano) en vez de objeto anidado" } },
+        { "name": "PUT Actualizar [ADMIN]", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"idServicio\":1,\"fecha\":\"2026-12-31\",\"tituloSerie\":\"Ano Nuevo 2027\"}" }, "url": { "raw": "{{base_url}}/api/v1/planes/1", "host": ["{{base_url}}"], "path": ["api","v1","planes","1"] } } },
+        { "name": "DELETE [ADMIN]", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/v1/planes/1", "host": ["{{base_url}}"], "path": ["api","v1","planes","1"] } } }
+      ]
+    },
+    {
+      "name": "4. Elementos",
+      "item": [
+        { "name": "GET Listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/elementos", "host": ["{{base_url}}"], "path": ["api","v1","elementos"] } } },
+        { "name": "GET por ID", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/elementos/1", "host": ["{{base_url}}"], "path": ["api","v1","elementos","1"] } } },
+        { "name": "GET por Plan", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/elementos/plan/1", "host": ["{{base_url}}"], "path": ["api","v1","elementos","plan","1"] } } },
+        { "name": "POST Crear [ADMIN]", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"idPlan\":1,\"orden\":1,\"titulo\":\"Prueba de sonido\",\"duracion\":30}" }, "url": { "raw": "{{base_url}}/api/v1/elementos", "host": ["{{base_url}}"], "path": ["api","v1","elementos"] } } },
+        { "name": "PUT Actualizar [ADMIN]", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"idPlan\":1,\"orden\":2,\"titulo\":\"Apertura puertas\",\"duracion\":60}" }, "url": { "raw": "{{base_url}}/api/v1/elementos/1", "host": ["{{base_url}}"], "path": ["api","v1","elementos","1"] } } },
+        { "name": "DELETE [ADMIN]", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/v1/elementos/1", "host": ["{{base_url}}"], "path": ["api","v1","elementos","1"] } } }
+      ]
+    },
+    {
+      "name": "5. Asignaciones",
+      "item": [
+        { "name": "GET Listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/asignaciones", "host": ["{{base_url}}"], "path": ["api","v1","asignaciones"] } } },
+        { "name": "GET por ID", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/asignaciones/1", "host": ["{{base_url}}"], "path": ["api","v1","asignaciones","1"] } } },
+        { "name": "GET por Plan", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/asignaciones/plan/1", "host": ["{{base_url}}"], "path": ["api","v1","asignaciones","plan","1"] } } },
+        { "name": "GET por Persona", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/asignaciones/persona/1", "host": ["{{base_url}}"], "path": ["api","v1","asignaciones","persona","1"] } } },
+        { "name": "POST Crear [ADMIN] + email", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"idPersona\":1,\"idPlan\":1,\"idEquipo\":1,\"estado\":\"Pendiente\"}" }, "url": { "raw": "{{base_url}}/api/v1/asignaciones", "host": ["{{base_url}}"], "path": ["api","v1","asignaciones"] }, "description": "Dispara correo al voluntario si estado=Pendiente" } },
+        { "name": "PATCH Estado [ADMIN/VOL]", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"estado\":\"Confirmado\"}" }, "url": { "raw": "{{base_url}}/api/v1/asignaciones/1/estado", "host": ["{{base_url}}"], "path": ["api","v1","asignaciones","1","estado"] } } },
+        { "name": "DELETE [ADMIN]", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/v1/asignaciones/1", "host": ["{{base_url}}"], "path": ["api","v1","asignaciones","1"] } } }
+      ]
+    },
+    {
+      "name": "6. Equipos",
+      "item": [
+        { "name": "GET Listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/equipos", "host": ["{{base_url}}"], "path": ["api","v1","equipos"] } } },
+        { "name": "GET por ID", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/equipos/1", "host": ["{{base_url}}"], "path": ["api","v1","equipos","1"] } } },
+        { "name": "POST Crear", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"nombreEquipo\":\"Cocina\"}" }, "url": { "raw": "{{base_url}}/api/v1/equipos", "host": ["{{base_url}}"], "path": ["api","v1","equipos"] } } },
+        { "name": "PUT Actualizar", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"nombreEquipo\":\"Cocina VIP\"}" }, "url": { "raw": "{{base_url}}/api/v1/equipos/7", "host": ["{{base_url}}"], "path": ["api","v1","equipos","7"] } } },
+        { "name": "DELETE", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/v1/equipos/7", "host": ["{{base_url}}"], "path": ["api","v1","equipos","7"] } } }
+      ]
+    },
+    {
+      "name": "7. Personas",
+      "item": [
+        { "name": "GET Listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/personas", "host": ["{{base_url}}"], "path": ["api","v1","personas"] } } },
+        { "name": "GET por ID", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v1/personas/1", "host": ["{{base_url}}"], "path": ["api","v1","personas","1"] } } },
+        { "name": "POST Registrar", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"nombre\":\"Maria Lopez\",\"email\":\"maria@test.com\",\"password\":\"123456\",\"rol\":\"ROLE_VOLUNTARIO\"}" }, "url": { "raw": "{{base_url}}/api/v1/personas", "host": ["{{base_url}}"], "path": ["api","v1","personas"] } } },
+        { "name": "PUT Actualizar", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"nombre\":\"Maria Edit\",\"email\":\"maria@test.com\",\"password\":\"\",\"rol\":\"ROLE_VOLUNTARIO\"}" }, "url": { "raw": "{{base_url}}/api/v1/personas/2", "host": ["{{base_url}}"], "path": ["api","v1","personas","2"] } } },
+        { "name": "DELETE", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/v1/personas/2", "host": ["{{base_url}}"], "path": ["api","v1","personas","2"] } } }
+      ]
+    },
+    {
+      "name": "8. Archivos",
+      "item": [{ "name": "POST Subir archivo", "request": { "method": "POST", "body": { "mode": "formdata", "formdata": [{ "key": "file", "type": "file", "src": [] }] }, "url": { "raw": "{{base_url}}/api/v1/archivos", "host": ["{{base_url}}"], "path": ["api","v1","archivos"] } } }]
+    },
+    {
+      "name": "9. Monitoreo",
+      "item": [
+        { "name": "GET Health", "request": { "method": "GET", "url": { "raw": "{{base_url}}/actuator/health", "host": ["{{base_url}}"], "path": ["actuator","health"] } } },
+        { "name": "GET Metrics", "request": { "method": "GET", "url": { "raw": "{{base_url}}/actuator/metrics", "host": ["{{base_url}}"], "path": ["actuator","metrics"] } } }
+      ]
+    }
+  ]
+}
