@@ -1,6 +1,7 @@
 services:
   - type: web
     name: asuneventos-api
+    runtime: docker
     plan: free
     dockerfilePath: ./Dockerfile
     envVars:
