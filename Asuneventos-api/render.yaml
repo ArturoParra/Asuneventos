@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: asuneventos-api
+    runtime: image
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: asuneventos-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: asuneventos-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: asuneventos-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: asuneventos-db
+          property: user
+      - key: DB_PASS
+        fromDatabase:
+          name: asuneventos-db
+          property: password
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION_MS
+        value: "86400000"
+
+databases:
+  - name: asuneventos-db
+    plan: free
+    region: oregon
+    databaseName: asuneventos
+    user: asuneventos_user
