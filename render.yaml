@@ -3,8 +3,6 @@ services:
     name: asuneventos-api
     runtime: docker
     plan: free
-    dockerfilePath: ./Asuneventos-api/Dockerfile
-    dockerContext: ./Asuneventos-api
     envVars:
       - key: DB_HOST
         fromDatabase:
