@@ -44,6 +44,19 @@ public class AsignacionServiceImpl implements AsignacionService {
     @Override
     @Transactional
     public Asignacion save(Asignacion asignacion) {
+        Optional<Asignacion> existente = asignacionRepository.findByPersona_IdPersonaAndPlan_IdPlanAndEquipo_IdEquipo(
+                asignacion.getPersona().getIdPersona(),
+                asignacion.getPlan().getIdPlan(),
+                asignacion.getEquipo().getIdEquipo()
+        );
+
+        if (existente.isPresent()) {
+            Long existingId = existente.get().getIdAsignacion();
+            if (asignacion.getIdAsignacion() == null || !existingId.equals(asignacion.getIdAsignacion())) {
+                throw new IllegalArgumentException("La asignación para esta persona, plan y equipo ya existe.");
+            }
+        }
+
         Asignacion saved = asignacionRepository.save(asignacion);
 
         if ("Pendiente".equalsIgnoreCase(saved.getEstado()) && saved.getPersona() != null) {

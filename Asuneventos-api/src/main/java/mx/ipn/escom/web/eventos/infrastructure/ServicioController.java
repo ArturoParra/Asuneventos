@@ -32,7 +32,6 @@ public class ServicioController {
         return ResponseEntity.ok(servicioService.findAll().stream()
                 .map(DTOMapper::toServicioResponse).toList());
     }
-
     @GetMapping("/{id}")
     @Operation(summary = "Buscar servicio por ID")
     @ApiResponse(responseCode = "404", description = "Servicio no encontrado")
