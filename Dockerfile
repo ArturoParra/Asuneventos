@@ -1,8 +1,8 @@
 FROM maven:3.9-eclipse-temurin-21 AS builder
 WORKDIR /app
-COPY pom.xml .
+COPY Asuneventos-api/pom.xml .
 RUN mvn dependency:go-offline -B
-COPY src ./src
+COPY Asuneventos-api/src ./src
 RUN mvn package -DskipTests -B
 
 FROM eclipse-temurin:21-jre
