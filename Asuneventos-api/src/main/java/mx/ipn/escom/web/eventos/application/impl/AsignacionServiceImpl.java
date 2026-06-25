@@ -4,9 +4,12 @@ import mx.ipn.escom.web.eventos.application.AsignacionService;
 import mx.ipn.escom.web.eventos.domain.entities.Asignacion;
 import mx.ipn.escom.web.eventos.domain.repository.AsignacionRepository;
 import mx.ipn.escom.web.eventos.infrastructure.MailService;
+import mx.ipn.escom.web.eventos.infrastructure.PdfGenerationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +22,12 @@ public class AsignacionServiceImpl implements AsignacionService {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private TemplateEngine templateEngine;
+
+    @Autowired
+    private PdfGenerationService pdfGenerationService;
 
     @Override
     @Transactional(readOnly = true)
@@ -46,14 +55,23 @@ public class AsignacionServiceImpl implements AsignacionService {
             String text = "Hola " + saved.getPersona().getNombre() + ",\n\n"
                     + "Se te ha asignado al equipo \"" + equipo + "\" "
                     + "para el plan \"" + planTitulo + "\".\n"
-                    + "Estado actual: Pendiente.\n\n"
-                    + "Por favor confirma tu disponibilidad en el sistema.\n\n"
+                    + "Por favor, revisa el archivo PDF adjunto con los detalles de tu asignación.\n\n"
                     + "Asuneventos - IPN ESCOM";
 
             try {
-                mailService.sendNotificacionAsignacion(email, subject, text);
+                Context context = new Context();
+                context.setVariable("nombre", saved.getPersona().getNombre());
+                context.setVariable("equipo", equipo);
+                context.setVariable("plan", planTitulo);
+                context.setVariable("estado", saved.getEstado());
+
+                String htmlContent = templateEngine.process("asignacion-pdf", context);
+                byte[] pdfBytes = pdfGenerationService.generatePdfFromHtml(htmlContent);
+
+                mailService.sendNotificacionAsignacionConPdf(email, subject, text, pdfBytes, "Detalles_Asignacion.pdf");
             } catch (Exception e) {
-                System.out.println("Error al enviar correo de notificacion: " + e.getMessage());
+                System.out.println("Error al enviar correo de notificacion con PDF: " + e.getMessage());
+                e.printStackTrace();
             }
         }
 
